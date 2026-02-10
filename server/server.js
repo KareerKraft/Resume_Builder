@@ -5,6 +5,7 @@ import "dotenv/config";
 import connectDB from './configs/db.js';
 import userRouter from './routes/userRouter.js';
 import resumeRouter from './routes/resumeRoutes.js';   // ✅ Proper import
+import aiRouter from './routes/aiRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ await connectDB();
 app.use(express.json());
 app.use(cors());
 app.use('/api/resumes',resumeRouter)
+app.use('/api/ai',aiRouter)
 
 // Test Route
 app.get('/', (req, res) => res.send("server is live..."));
