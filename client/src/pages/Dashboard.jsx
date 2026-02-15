@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { PlusIcon, UploadCloudIcon, UploadCloud, FilePenLineIcon, TrashIcon, PencilIcon, XIcon, } from "lucide-react"
-import { dummyResumeData } from "../assets/assets"
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { toast } from 'react-hot-toast';
 import axios from "axios";
+import pdfToText from 'react-pdftotext'
 
 const Dashboard = () => {
 
@@ -21,14 +21,25 @@ const Dashboard = () => {
     const [resume, setResume] = useState(null)
     const [editResumeId, setEditResumeId] = useState("")
 
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate()
     const loadAllResumes = async () => {
-        setAllResumes(dummyResumeData)
+        try {
+            const { data } = await axios.get('http://localhost:3000/api/users/resumes', {
+                headers: {
+                    Authorization: token
+                }
+            });
+            setAllResumes(data.resumes);
+        } catch (error) {
+             toast.error(error?.response?.data?.message || error.message)
+        }
     }
 
     useEffect(() => {
         loadAllResumes()
     }, [])
+
     const createResume = async (event) => {
         try {
             event.preventDefault()
@@ -45,10 +56,24 @@ const Dashboard = () => {
             toast.error(error?.response?.data?.message || error.message)
         }
     }
-    const uploadResume = async (e) => {
-        e.preventDefault()
-        setShowUploadResume(false)
-        navigate("/app/builder/res123")
+    const uploadResume = async (event) => {
+        event.preventDefault()
+        setIsLoading(true);
+        try {
+            const resumeText = await pdfToText(resume)
+            const { data } = await axios.post('http://localhost:3000/api/ai/upload-resume', { title, resumeText }, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            setTitle('')
+            setResume(null)
+            setShowUploadResume(false)
+            navigate(`/app/builder/${data.resumeId}`)
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        }
+        setIsLoading(false)
     }
     const editTitle = async (e) => {
         e.preventDefault()
