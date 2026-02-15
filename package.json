@@ -2,10 +2,9 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.5",
-    "concurrently": "^9.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.6.0",
+    "react-hot-toast": "^2.4.1",
     "react-pdftotext": "^1.3.4",
     "react-redux": "^9.2.0"
   },
@@ -13,5 +12,23 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev"
-  }
+  },
+  "name": "resume_builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "eslint.config.js",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KareerKraft/Resume_Builder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KareerKraft/Resume_Builder/issues"
+  },
+  "homepage": "https://github.com/KareerKraft/Resume_Builder#readme"
 }

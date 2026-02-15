@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react"
-import {PlusIcon, UploadCloudIcon, UploadCloud, FilePenLineIcon, TrashIcon, PencilIcon, XIcon, } from "lucide-react"
+import { PlusIcon, UploadCloudIcon, UploadCloud, FilePenLineIcon, TrashIcon, PencilIcon, XIcon, } from "lucide-react"
 import { dummyResumeData } from "../assets/assets"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { toast } from 'react-hot-toast';
+import axios from "axios";
 
 const Dashboard = () => {
+
+    const { user, token } = useSelector(state => state.auth);
+
+
+
     const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"]
 
     const [allResumes, setAllResumes] = useState([])
@@ -21,10 +29,21 @@ const Dashboard = () => {
     useEffect(() => {
         loadAllResumes()
     }, [])
-    const createResume = async (e) => {
-        e.preventDefault()
-        setShowCreateResume(false)
-        navigate("/app/builder/res123")
+    const createResume = async (event) => {
+        try {
+            event.preventDefault()
+            const { data } = await axios.post('http://localhost:3000/api/resumes/create', { title }, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            setAllResumes([...allResumes, data.resume])
+            setTitle('')
+            setShowCreateResume(false)
+            navigate(`/app/builder/${data.resume._id}`)
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        }
     }
     const uploadResume = async (e) => {
         e.preventDefault()
