@@ -1,5 +1,6 @@
 import Resume from "../models/Resume.js";
 import ai from "../configs/ai.js";
+import pdfParse from 'pdf-parse';
 //controllers for enchancing a resume professional summary
 //POST: /api/ai/enhance-pro-sum
 
@@ -67,12 +68,19 @@ export const UpdateResume = async(req,res) =>{
         const {resumeText , title}= req.body;
         const userId = req.userId;
 
-        if(!resumeText){
+        // If client uploaded a file, parse it server-side
+        let extractedText = resumeText;
+        if(req.file){
+            const data = await pdfParse(req.file.buffer);
+            extractedText = data?.text || "";
+        }
+
+        if(!extractedText){
             return res.status(400).json({message:"Missing required fields"})
         }
         const systemPrompt = "You are an expert AI Agent to extract data from resume."
 
-        const userPrompt = `extract data from this resume: ${resumeText}
+        const userPrompt = `extract data from this resume: ${extractedText}
         
         Provide data in the following JSON format with no additional text before or after:
         {
