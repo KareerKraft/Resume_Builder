@@ -47,14 +47,14 @@ export const getResumeById = async (req, res) => {
     try {
         const userId = req.userId;
 
-        const { resumeId } = req.body;
+        // support both route param and body
+        const resumeId = req.params.resumeId || req.body.resumeId;
 
         // create new resume
         const resume = await Resume.findOne({ userId, _id: resumeId })
 
         if (!resume) {
-            return res.status(404).json({ message: error.message })
-
+            return res.status(404).json({ message: "Resume not found" })
         }
         resume._v = undefined;
         resume.createdAt = undefined;

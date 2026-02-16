@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
+import { useSelector } from 'react-redux'
+import axios from 'axios'
 import { dummyResumeData } from "../assets/assets"
 import {
   Share2Icon,
@@ -29,6 +31,7 @@ import ResumePreview from "../components/ResumePreview"
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams()
+  const { token } = useSelector(state => state.auth)
 
   const [resumeData, setResumeData] = useState({
     _id: "",
@@ -59,11 +62,30 @@ const ResumeBuilder = () => {
   const activeSection = sections[activeSectionIndex]
 
   useEffect(() => {
-    const resume = dummyResumeData.find((r) => r._id === resumeId)
-    if (resume) {
-      setResumeData(resume)
-      document.title = resume.title
+    const load = async () => {
+      // check local dummy data first
+      const resume = dummyResumeData.find((r) => r._id === resumeId)
+      if (resume) {
+        setResumeData(resume)
+        document.title = resume.title
+        return
+      }
+
+      try {
+        const { data } = await axios.get(`http://localhost:3000/api/resumes/get/${resumeId}`, {
+          headers: { Authorization: token }
+        })
+        if (data?.resume) {
+          setResumeData(data.resume)
+          document.title = data.resume.title || ''
+        }
+      } catch (error) {
+        // fail silently; keep defaults
+        console.error(error?.response?.data || error.message)
+      }
     }
+
+    load()
   }, [resumeId])
 
   /* ================= ACTIONS ================= */
