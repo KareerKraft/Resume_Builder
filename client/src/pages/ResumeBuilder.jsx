@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { dummyResumeData } from "../assets/assets"
+import { toast } from 'react-hot-toast';
 import {
   Share2Icon,
   EyeIcon,
@@ -90,8 +91,37 @@ const ResumeBuilder = () => {
 
   /* ================= ACTIONS ================= */
 
-  const changeResumeVisibility = () => {
-    setResumeData((prev) => ({ ...prev, public: !prev.public }))
+  const changeResumeVisibility = async () => {
+    const newPublic = !resumeData.public
+
+    try {
+      // persist to server
+      await axios.put(
+        `http://localhost:3000/api/resumes/update`,
+        { resumeId, resumeData: { public: newPublic } },
+        { headers: { Authorization: token } }
+      )
+
+      setResumeData((prev) => ({ ...prev, public: newPublic }))
+
+      // copy public link and open
+      const resumeUrl = `${window.location.origin}/view/${resumeId}`
+      try {
+        await navigator.clipboard.writeText(resumeUrl)
+      } catch (err) {
+        // ignore clipboard errors
+      }
+
+      if (newPublic) {
+        alert('Resume is now public. Link copied to clipboard.')
+        window.open(resumeUrl, '_blank')
+      } else {
+        alert('Resume set to private')
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error(error?.response?.data?.message || error.message)
+    }
   }
 
   const handleShare = () => {

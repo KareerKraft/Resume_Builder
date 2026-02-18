@@ -276,43 +276,8 @@ const Dashboard = () => {
                                     <p>Upload resume</p>
                                 </>
                             )}
-                            {/* EDIT MODAL */}
-                            {editResumeId && (
-                                <form
-                                    onSubmit={editTitle}
-                                    onClick={() => setEditResumeId("")}
-                                    className="fixed inset-0 bg-black/70 backdrop-blur-sm z-10 flex items-center justify-center"
-                                >
-                                    <div
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="relative bg-slate-50 rounded-lg w-full max-w-sm p-6"
-                                    >
-                                        <h2 className="text-xl font-bold mb-4">
-                                            Edit Resume Title
-                                        </h2>
+                            
 
-                                        <input
-                                            value={title}
-                                            onChange={(e) => setTitle(e.target.value)}
-                                            type="text"
-                                            className="w-full px-4 py-2 mb-4 border rounded"
-                                            required
-                                        />
-
-                                        <button className="w-full py-2 bg-green-600 text-white rounded">
-                                            Update
-                                        </button>
-
-                                        <XIcon
-                                            className="absolute top-4 right-4 cursor-pointer"
-                                            onClick={() => {
-                                                setEditResumeId("")
-                                                setTitle("")
-                                            }}
-                                        />
-                                    </div>
-                                </form>
-                            )}
 
 
                             {/* REQUIRED FIX — removed required */}
@@ -333,6 +298,44 @@ const Dashboard = () => {
                             className="absolute top-4 right-4 cursor-pointer"
                             onClick={() => {
                                 setShowUploadResume(false)
+                                setTitle("")
+                            }}
+                        />
+                    </div>
+                </form>
+            )}
+
+            {/* EDIT MODAL */}
+            {editResumeId && (
+                <form
+                    onSubmit={editTitle}
+                    onClick={() => setEditResumeId("")}
+                    className="fixed inset-0 bg-black/70 backdrop-blur-sm z-10 flex items-center justify-center"
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative bg-slate-50 rounded-lg w-full max-w-sm p-6"
+                    >
+                        <h2 className="text-xl font-bold mb-4">
+                            Edit Resume Title
+                        </h2>
+
+                        <input
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            type="text"
+                            className="w-full px-4 py-2 mb-4 border rounded"
+                            required
+                        />
+
+                        <button className="w-full py-2 bg-green-600 text-white rounded">
+                            Update
+                        </button>
+
+                        <XIcon
+                            className="absolute top-4 right-4 cursor-pointer"
+                            onClick={() => {
+                                setEditResumeId("")
                                 setTitle("")
                             }}
                         />

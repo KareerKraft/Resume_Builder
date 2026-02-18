@@ -49,6 +49,9 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Login />} />
 
+      {/* Public direct preview route (used by shared links) */}
+      <Route path="/view/:resumeId" element={<Preview />} />
+
       {/* Protected routes */}
       <Route path="/app" element={<Layout />}>
         <Route index element={<Dashboard />} />
